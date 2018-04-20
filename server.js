@@ -5,10 +5,22 @@ var express = require('express'),
     
 Object.assign=require('object-assign')
 
+var helloworldServiceURL = process.env.HELLO_WORLD_SERVICE_IP || KUBERNETES_SERVICE_HOST || '0.0.0.0';
+
+var request = require('request');
+request('http://' + helloworldServiceURL + ':8080/testApp/crunchify/helloworld/', function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+        console.log(body) 
+     }
+     else {
+      console.log(error)
+     }
+})
+
 app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 
-var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
+var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8081,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
     mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
     mongoURLLabel = "";
@@ -32,6 +44,7 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
 
   }
 }
+
 var db = null,
     dbDetails = new Object();
 
@@ -59,6 +72,7 @@ var initDb = function(callback) {
 app.get('/', function (req, res) {
   // try to initialize the db on every request if it's not already
   // initialized.
+
   if (!db) {
     initDb(function(err){});
   }
@@ -104,5 +118,6 @@ initDb(function(err){
 
 app.listen(port, ip);
 console.log('Server running on http://%s:%s', ip, port);
+
 
 module.exports = app ;
