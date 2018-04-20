@@ -5,7 +5,7 @@ var express = require('express'),
     
 Object.assign=require('object-assign')
 
-var helloworldServiceURL = process.env.HELLO_WORLD_SERVICE_IP || KUBERNETES_SERVICE_HOST || '0.0.0.0';
+var helloworldServiceURL = process.env.HELLO_WORLD_SERVICE_IP || process.env.KUBERNETES_SERVICE_HOST || '0.0.0.0';
 
 var request = require('request');
 request('http://' + helloworldServiceURL + ':8080/testApp/crunchify/helloworld/', function (error, response, body) {
